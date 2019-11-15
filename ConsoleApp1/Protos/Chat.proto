@@ -1,0 +1,25 @@
+﻿syntax = "proto3";
+option csharp_namespace = "GrpcServices2";
+import "google/protobuf/empty.proto";
+package Chat;
+
+service Chat{
+	rpc ChatStram(stream ChatRequest) returns (stream ChatResponse);
+
+	//rpc Listen(google.protobuf.Empty) returns (stream ChatRequest);
+
+	rpc join (stream ChatRequest) returns (stream ChatRequest);
+}
+
+message ChatRequest{
+	  string name = 1;
+	  string message = 2;
+}
+
+message ChatResponse{
+	  string name = 1;
+	  string message = 2;
+}
+
+
+
