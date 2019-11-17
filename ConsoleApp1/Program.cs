@@ -24,9 +24,9 @@ namespace ConsoleApp1
             Console.WriteLine("输入消息：");
             string Message = "";
             Message = Console.ReadLine();
-            
+
             //定义接收响应逻辑
-            /*_ = Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 while (await chat.ResponseStream.MoveNext(cancellationToken: CancellationToken.None))
                 {
@@ -39,7 +39,7 @@ namespace ConsoleApp1
                 }
             });
 
-            //await chat.RequestStream.WriteAsync(new ChatRequest { Name = Name, Message = $"{Name} has joined the room" });
+            await chat.RequestStream.WriteAsync(new ChatRequest { Name = Name, Message = $"{Name} has joined the room" });
 
             string line;
             while ((line = Console.ReadLine()) != null)
@@ -50,9 +50,9 @@ namespace ConsoleApp1
                 }
                 await chat.RequestStream.WriteAsync(new ChatRequest { Name = Name, Message = line });
             }
-            await chat.RequestStream.CompleteAsync();*/
+            await chat.RequestStream.CompleteAsync();
 
-            await SendMessage(channel, Name, Message);
+           // await SendMessage(channel, Name, Message);
 
             Console.ReadKey();
         }
