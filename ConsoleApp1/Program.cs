@@ -31,7 +31,7 @@ namespace ConsoleApp1
                 while (await chat.ResponseStream.MoveNext(cancellationToken: CancellationToken.None))
                 {
                     var response = chat.ResponseStream.Current;
-                    Console.WriteLine($"{response.Message}");
+                    Console.WriteLine($"{response.Name}：{response.Message}");
                 }
                 await foreach (var resp in chat.ResponseStream.ReadAllAsync())
                 {
