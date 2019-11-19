@@ -2,6 +2,7 @@
 using Grpc.Net.Client;
 using GrpcServices2;
 using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,19 @@ namespace ConsoleApp1
         public static async Task Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            var channel = GrpcChannel.ForAddress("https://localhost:5001");
+            var httpClientHandler = new HttpClientHandler();
+            // Return `true` to allow certificates that are untrusted/invalid
+            //忽略无效证书（可行）
+            //既然是证书无效导致的问题，那么忽略无效证书是不是可以呢？在代码中加上忽略无效证书的代码。然后再次进行尝试发现也是可以的。
+            //不过这里需要注意的是这个忽略无效证书在开发过程中使用即可，换到生产环境还是替换成有效证书
+            httpClientHandler.ServerCertificateCustomValidationCallback =
+            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            var httpClient = new HttpClient(httpClientHandler);
+             var channel = GrpcChannel.ForAddress("https://192.168.8.100:5001", new GrpcChannelOptions { HttpClient = httpClient });
+            /*            AppContext.SetSwitch(
+                  "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);*/
+          //  var channel = GrpcChannel.ForAddress("https://localhost:5001");
+
             var ChatClient2 = new Chat.ChatClient(channel);
             var chat = ChatClient2.join();
             string Name = "";
@@ -33,10 +46,10 @@ namespace ConsoleApp1
                     var response = chat.ResponseStream.Current;
                     Console.WriteLine($"{response.Name}：{response.Message}");
                 }
-                await foreach (var resp in chat.ResponseStream.ReadAllAsync())
+  /*              await foreach (var resp in chat.ResponseStream.ReadAllAsync())
                 {
                     Console.WriteLine(resp.Message);
-                }
+                }*/
             });
 
             await chat.RequestStream.WriteAsync(new ChatRequest { Name = Name, Message = $"{Name} has joined the room" });
